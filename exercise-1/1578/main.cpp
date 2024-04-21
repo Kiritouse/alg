@@ -4,8 +4,10 @@ typedef struct block{
     int index;  //砖块的编号
     char str[5]; //每个砖块的实际位置
 }Block;
-bool checkConnect(){
-    
+bool checkConnect(char ch1,char ch2){
+    //一个大写一个小写且是同一个字母 abs(ch1-ch2)=32
+    if(abs(ch1-ch2)==32) return true;
+    else return false;
 }
 void turn(char str[]){ //顺时针旋转某个字符串
     char temp[5] = {0};
@@ -43,43 +45,19 @@ bool check(Block blocks[]){
         else if(blocks[i].index==2) src2 = i;
         else if(blocks[i].index==3) src3 = i;
     }
-    //看砖块0能否和砖块1和3相连
-    for(int it0 = 0;it0<4;it0++)
-    {  //此处遍历只管旋转
+    //遍历每个砖块的旋转
+    for(int it0 = 0;it0<4;it0++) {  
                 for(int it1 = 0;it1<4;it1++){
                     for(int it2 = 0;it2<4;it2++){
                         for(int it3 = 0;it3<4;it3++){
-                            if(islower(blocks[src0].str[2] )&&isupper(blocks[src1].str[0])){  //一个大写一个小写
-                                if(blocks[src0].str[2]-32-blocks[src1].str[0]==0){   //再去判断2能不能1,3相连
-                                    
-                                }
-                                else {  //判断
-
-                                };
+                            if(checkConnect(blocks[src0].str[2],blocks[src1].str[0])==false
+                                ||checkConnect(blocks[src0].str[3],blocks[src3].str[1])==false
+                                ||checkConnect(blocks[src2].str[1],blocks[src1].str[3])==false
+                                ||checkConnect(blocks[src2].str[0],blocks[src3].str[2])==false){  
+                                        //如果无法相连
+                                        turn(blocks[src3].str);  //转动
                             }
-                            else if(isupper(blocks[src0].str[2] )&&islower(blocks[src1].str[0])){
-                                if(blocks[src0].str[2]+32-blocks[src1].str[0]!=0){  
-                                    turn(blocks[src3].str);
-                                }
-                                else return true;
-                            }
-                            else turn(blocks[src3].str);;
-
-                        
-                    
-                            // if( (toupper(blocks[src0].str[2])-toupper(blocks[src1].str[0])!=0)||  //判断0能不能和1,3连接  TODO,
-                            // (toupper(blocks[src0].str[3])-toupper(blocks[src3].str[1])!=0)){
-                            //         turn(blocks[src3].str);
-                            //         continue;                           
-                            //  }
-                            // else if( (toupper(blocks[src2].str[1])-toupper(blocks[src1].str[3])!=0)||  //判断2能不能和1,3连接
-                            // (toupper(blocks[src2].str[0])-toupper(blocks[src3].str[2])!=0)){
-                            //         turn(blocks[src3].str);
-                            //         continue;                             
-                            //  }
-                            //  else{ //能连接
-                            //        return true;
-                            //  }
+                            else return true;
                         }
                         turn(blocks[src2].str);
                     }
@@ -87,7 +65,6 @@ bool check(Block blocks[]){
                 }
                 turn(blocks[src0].str);
     }
-
     return false;
 }
 
@@ -112,19 +89,20 @@ int main(){
                                 && it1!=it2&&it1!=it3
                                 && it2!=it3
                                 ){
-                                  blocks[0].index = it0;
+                                  blocks[0].index = it0;  
                                   blocks[1].index =  it1;
                                   blocks[2].index = it2;
                                   blocks[3].index = it3;
                                     if(check(blocks)){
                                         printf("Yes\n");
                                         goto flag;
-                                    }
+                                    }                             
                                 }
                         }
                     }
                 }
             }
+            printf("No\n");
             flag: ;
     }
     return 0;
